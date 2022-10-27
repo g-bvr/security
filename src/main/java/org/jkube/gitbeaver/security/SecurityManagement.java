@@ -37,8 +37,9 @@ public class SecurityManagement {
         String result = System.getenv(envVariable);
         if (result == null) {
             Log.warn("Master key environment variable was not set: "+envVariable);
+        } else {
+            onException(() -> setEnv(envVariable, "master key was burnt after reading")).fail("could not burn master key");
         }
-        onException(() -> setEnv(envVariable, "master key was burnt after reading")).fail("could not burn master key");
         return result;
     }
 
