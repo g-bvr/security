@@ -26,7 +26,7 @@ public class CreateKeyPairCommand extends AbstractCommand {
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
         int keySize = Integer.parseInt(arguments.get(0));
-        Expect.equal("into", arguments.get(1).toLowerCase()).elseFail("expected INTO keyword");
+        expectArg(1, "into", arguments);
         String variable = arguments.get(2);
         variables.put(variable, SecurityManagement.createKeyPair(keySize));
         Log.log("Stored created key pair of size "+keySize+" into variable "+variable);

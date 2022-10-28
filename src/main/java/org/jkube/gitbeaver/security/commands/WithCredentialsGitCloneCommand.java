@@ -21,7 +21,6 @@ public class WithCredentialsGitCloneCommand extends AbstractCommand {
 
     private static final String PROTOCOL_SEPARATOR = "://";
     private static final String CREDENTIALS_SEPARATOR = "@";
-    private static final String CLONE = "CLONE";
 
     public WithCredentialsGitCloneCommand() {
         super(4, 5, "git", "with", "credentials");
@@ -31,7 +30,7 @@ public class WithCredentialsGitCloneCommand extends AbstractCommand {
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
         String credentials = SecurityManagement.getSecret(arguments.get(0), SecretType.GIT);
         URL url = addGitCredentials(arguments.get(1), credentials);
-        Expect.equal(arguments.get(2).toUpperCase(), CLONE).elseFail("expected "+CLONE+" keyword");
+        expectArg(2, "clone", arguments);
         String repository = arguments.get(3);
         String tag = arguments.size() == 5 ? arguments.get(4) : null;
         GitBeaver.gitCloner().clone(workSpace.getWorkdir(), url, repository, tag);
