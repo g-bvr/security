@@ -14,7 +14,7 @@ import java.util.Map;
 public class MasterKeyPresentCommand extends AbstractCommand {
 
     public MasterKeyPresentCommand() {
-        super(1, 1, "security", "masterkey", "present");
+        super(1, 1, "security", "masterkey", "present", "into");
     }
 
     @Override
