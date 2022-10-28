@@ -6,6 +6,7 @@ import org.jkube.gitbeaver.WorkSpace;
 import org.jkube.gitbeaver.security.PublicPrivateEncryption;
 import org.jkube.gitbeaver.security.SecurityManagement;
 import org.jkube.logging.Log;
+import org.jkube.util.Expect;
 
 import java.util.List;
 import java.util.Map;
@@ -18,13 +19,14 @@ import static org.jkube.logging.Log.onException;
 public class EncryptCommand extends AbstractCommand {
     
     public EncryptCommand() {
-        super(2, 2, "security", "encrypt");
+        super(3, 3, "security", "encrypt");
     }
 
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
         String secret = arguments.get(0);
-        String variable = arguments.get(1);
+        Expect.equal("into", arguments.get(1).toLowerCase()).elseFail("expected INTO keyword");
+        String variable = arguments.get(2);
         variables.put(variable, SecurityManagement.encrypt(secret));
         Log.log("Stored encrypted secret in variable "+variable);
     }
