@@ -33,7 +33,7 @@ public class WithCredentialsGitCloneCommand extends AbstractCommand {
         expectArg(2, "clone", arguments);
         String repository = arguments.get(3);
         String tag = arguments.size() == 5 ? arguments.get(4) : null;
-        GitBeaver.gitCloner().clone(workSpace.getWorkdir(), url, repository, tag);
+        GitBeaver.gitCloner().clone(workSpace.getWorkdir(), url, repository, tag, GitBeaver.getApplicationLogger(variables));
     }
 
     private URL addGitCredentials(String url, String credentials) {
