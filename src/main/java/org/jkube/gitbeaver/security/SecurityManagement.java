@@ -38,9 +38,10 @@ public class SecurityManagement {
             List<String> keyLines = FileUtil.readLines(path);
             Log.log("Read {} lines for master key", keyLines.size());
             Expect.equal(1, keyLines.size()).elseFail("expected exactly one line in master key file");
-            Log.log("Deleting secret directory {}", SECRETS_DIRECTORY);
-            FileUtil.delete(SECRETS_DIRECTORY);
-            Log.log("Directory {} exists: ", SECRETS_DIRECTORY.toFile().exists());
+            // this is not permitted, is there some way to unmount a volume in docker?
+            // Log.log("Deleting secret directory {}", SECRETS_DIRECTORY);
+            //FileUtil.delete(SECRETS_DIRECTORY);
+            //Log.log("Directory {} exists: ", SECRETS_DIRECTORY.toFile().exists());
             return keyLines.get(0);
         } else {
             Log.warn("Master key file was not found: "+path);
