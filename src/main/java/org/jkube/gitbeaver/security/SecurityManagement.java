@@ -1,13 +1,11 @@
 package org.jkube.gitbeaver.security;
 
-import org.jkube.application.Application;
-import org.jkube.gitbeaver.security.PublicPrivateEncryption;
-import org.jkube.gitbeaver.security.SecretHolder;
+import org.jkube.gitbeaver.util.FileUtil;
 import org.jkube.logging.Log;
+import org.jkube.util.Expect;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Map;
+import java.nio.file.Path;
+import java.util.List;
 
 import static org.jkube.logging.Log.onException;
 
@@ -15,10 +13,11 @@ public class SecurityManagement {
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
     private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
-    private static final String KEY_PAIR_ENV_VARIABLE = "MASTER_KEY_PAIR";
+    private static final Path SECRETS_DIRECTORY = Path.of("/secret/");
+    private static final String MASTER_KEY_FILE = "git-beaver-master-key";
 
     private static PublicPrivateEncryption createEncryption() {
-        String keypair = burnAfterReading(KEY_PAIR_ENV_VARIABLE);
+        String keypair = burnAfterReading();
         if (keypair == null) {
             return null;
         }
@@ -33,41 +32,19 @@ public class SecurityManagement {
         return ENCRYPTION != null;
     }
 
-    private static String burnAfterReading(String envVariable) {
-        String result = System.getenv(envVariable);
-        if (result == null) {
-            Log.warn("Master key environment variable was not set: "+envVariable);
+    private static String burnAfterReading() {
+        Path path = SECRETS_DIRECTORY.resolve(MASTER_KEY_FILE);
+        if (path.toFile().exists()) {
+            Log.warn("Master key file was not found: "+path);
+            return null;
         } else {
-            onException(() -> setEnv(envVariable, "master key was burnt after reading")).fail("could not burn master key");
-        }
-        return result;
-    }
-
-    // https://stackoverflow.com/questions/318239/how-do-i-set-environment-variables-from-java
-    public static void setEnv(String key, String value) throws Exception {
-        try {
-            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-            theEnvironmentField.setAccessible(true);
-            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-            env.put(key, value);
-            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
-            theCaseInsensitiveEnvironmentField.setAccessible(true);
-            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-            cienv.put(key, value);
-        } catch (NoSuchFieldException e) {
-            Class[] classes = Collections.class.getDeclaredClasses();
-            Map<String, String> env = System.getenv();
-            for(Class cl : classes) {
-                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-                    Field field = cl.getDeclaredField("m");
-                    field.setAccessible(true);
-                    Object obj = field.get(env);
-                    Map<String, String> map = (Map<String, String>) obj;
-                    map.clear();
-                    map.put(key, value);
-                }
-            }
+            List<String> keyLines = FileUtil.readLines(path);
+            Log.log("Read {} lines for master key", keyLines.size());
+            Expect.equal(1, keyLines.size()).elseFail("expected exactly one line in master key file");
+            Log.log("Deleting secret directory {}", SECRETS_DIRECTORY);
+            FileUtil.delete(SECRETS_DIRECTORY);
+            Log.log("Directory {} exists: ", SECRETS_DIRECTORY.toFile().exists());
+            return keyLines.get(0);
         }
     }
 
