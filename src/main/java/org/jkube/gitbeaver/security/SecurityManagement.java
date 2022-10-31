@@ -11,11 +11,11 @@ import static org.jkube.logging.Log.onException;
 
 public class SecurityManagement {
 
-    private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
-    private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
     private static final Path SECRETS_DIRECTORY = Path.of("/secret/");
     private static final String MASTER_KEY_FILE = "git-beaver-master-key";
 
+    private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
+    private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
     private static PublicPrivateEncryption createEncryption() {
         String keypair = burnAfterReading();
         if (keypair == null) {
