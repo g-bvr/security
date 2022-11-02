@@ -26,7 +26,7 @@ public class CreateKeyPairCommand extends AbstractCommand {
     private static final String SECRET_FILE_VARIABLE = "masterkey";
 
     public CreateKeyPairCommand() {
-        super(3, 3,  "with", "new", "master", "key");
+        super(3, null,  "with", "new", "master", "key");
     }
 
     @Override
