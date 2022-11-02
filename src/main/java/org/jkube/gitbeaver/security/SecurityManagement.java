@@ -61,6 +61,7 @@ public class SecurityManagement {
     }
 
     public static Path createSecretFile(String secret) {
+        FileUtil.createIfNotExists(SECRETS_DIRECTORY);
         String filename = "secret"+Math.abs(RANDOM.nextLong());
         Path path = SECRETS_DIRECTORY.resolve(filename);
         Log.log("Creating secret file: "+path);
@@ -69,7 +70,7 @@ public class SecurityManagement {
     }
 
     public static void deleteSecretFile(Path file) {
-        Log.log("Creating secret file: "+file);
+        Log.log("Deleting^ secret file: "+file);
         FileUtil.delete(file);
     }
 
