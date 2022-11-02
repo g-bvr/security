@@ -6,6 +6,7 @@ import org.jkube.util.Expect;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Random;
 
 import static org.jkube.logging.Log.onException;
 
@@ -16,6 +17,8 @@ public class SecurityManagement {
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
     private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
+
+    private static final Random RANDOM = new Random();
     private static PublicPrivateEncryption createEncryption() {
         String keypair = burnAfterReading();
         if (keypair == null) {
@@ -56,4 +59,18 @@ public class SecurityManagement {
     public static String getSecret(String keyId, SecretType type) {
         return onException(() -> SECRET_HOLDER.getSecret(keyId, type)).fail("Could not decrypt secret "+keyId+" of type "+type);
     }
+
+    public static Path createSecretFile(String secret) {
+        String filename = "secret"+Math.abs(RANDOM.nextLong());
+        Path path = SECRETS_DIRECTORY.resolve(filename);
+        Log.log("Creating secret file: "+path);
+        FileUtil.store(path, List.of(secret));
+        return path;
+    }
+
+    public static void deleteSecretFile(Path file) {
+        Log.log("Creating secret file: "+file);
+        FileUtil.delete(file);
+    }
+
 }
