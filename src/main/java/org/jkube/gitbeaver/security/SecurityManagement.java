@@ -70,7 +70,7 @@ public class SecurityManagement {
     }
 
     public static void deleteSecretFile(Path file) {
-        Log.log("Deleting^ secret file: "+file);
+        Log.log("Deleting secret file: "+file);
         FileUtil.delete(file);
     }
 
