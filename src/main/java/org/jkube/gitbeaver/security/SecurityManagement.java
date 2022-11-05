@@ -13,7 +13,7 @@ import static org.jkube.logging.Log.onException;
 public class SecurityManagement {
 
     private static final Path SECRETS_DIRECTORY = Path.of("/secret/");
-    private static final String MASTER_KEY_FILE = "git-beaver-master-key";
+    private static final String MASTER_KEY_ENV_VARIABLE = "gitbeaver-masterkey";
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
     private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
@@ -36,20 +36,17 @@ public class SecurityManagement {
     }
 
     private static String burnAfterReading() {
-        Path path = SECRETS_DIRECTORY.resolve(MASTER_KEY_FILE);
-        if (path.toFile().exists()) {
-            List<String> keyLines = FileUtil.readLines(path);
-            Log.log("Read {} lines for master key", keyLines.size());
-            Expect.equal(1, keyLines.size()).elseFail("expected exactly one line in master key file");
-            // this is not permitted, is there some way to unmount a volume in docker?
-            // Log.log("Deleting secret directory {}", SECRETS_DIRECTORY);
-            //FileUtil.delete(SECRETS_DIRECTORY);
-            //Log.log("Directory {} exists: ", SECRETS_DIRECTORY.toFile().exists());
-            return keyLines.get(0);
-        } else {
-            Log.warn("Master key file was not found: "+path);
+        String masterkey = System.getenv(MASTER_KEY_ENV_VARIABLE);
+        if (masterkey == null) {
+            Log.log("Master key env variable is not set.");
             return null;
         }
+        if (masterkey.isBlank()) {
+            Log.warn("Master key is not set yet");
+            return null;
+        }
+        onException(() -> EnvUntil.clear(MASTER_KEY_ENV_VARIABLE)).fail("Could not delete masterkey env variable");
+        return masterkey;
     }
 
     public static String encrypt(String secret) {
