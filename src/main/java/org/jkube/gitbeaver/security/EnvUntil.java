@@ -1,5 +1,7 @@
 package org.jkube.gitbeaver.security;
 
+import org.jkube.gitbeaver.GitBeaver;
+import org.jkube.gitbeaver.applicationlog.DefaultLogConsole;
 import org.jkube.gitbeaver.util.ExternalProcess;
 import org.jkube.gitbeaver.util.FileUtil;
 import org.jkube.logging.Log;
@@ -30,12 +32,20 @@ public class EnvUntil {
 
     private static void checkSetInSystem(String envvar) {
         FileUtil.store(Path.of("show.sh"), List.of("echo", "$"+envvar));
-        List<String> out = new ExternalProcess().command("sh", "show.sh").execute().getOutput();
+        List<String> out = new ExternalProcess()
+                .command("sh", "show.sh")
+                .logConsole(new NoLogConsole())
+                .execute()
+                .getOutput();
         Log.log(envvar+" is set system to "+String.join(" ", out));
     }
 
     private static void clearInSystem(String envvar) {
-        if (new ExternalProcess().command("sh", "unset", envvar).execute().hasFailed()) {
+        if (new ExternalProcess()
+                .command("sh", "unset", envvar)
+                .logConsole(new DefaultLogConsole())
+                .execute()
+                .hasFailed()) {
             Log.warn("Could not unset masterkey env variable");
         }
     }

@@ -19,6 +19,8 @@ public class SecurityManagement {
     private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
 
     private static final Random RANDOM = new Random();
+    private static final String NOT_SET = "not-set";
+
     private static PublicPrivateEncryption createEncryption() {
         String keypair = burnAfterReading();
         if (keypair == null) {
@@ -41,7 +43,7 @@ public class SecurityManagement {
             Log.log("Master key env variable is not set.");
             return null;
         }
-        if (masterkey.isBlank()) {
+        if (NOT_SET.equals(masterkey)) {
             Log.warn("Master key is not set yet");
             return null;
         }
