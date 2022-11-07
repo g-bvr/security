@@ -31,7 +31,7 @@ public class EnvUntil {
     }
 
     private static void checkSetInSystem(String envvar) {
-        FileUtil.store(Path.of("show.sh"), List.of("echo", "$"+envvar));
+        FileUtil.store(Path.of("show.sh"), List.of("echo $"+envvar));
         List<String> out = new ExternalProcess()
                 .command("sh", "show.sh")
                 .logConsole(new NoLogConsole())
@@ -41,8 +41,9 @@ public class EnvUntil {
     }
 
     private static void clearInSystem(String envvar) {
+        FileUtil.store(Path.of("unset.sh"), List.of("unset "+envvar));
         if (new ExternalProcess()
-                .command("sh", "unset", envvar)
+                .command("sh", "unset.sh", envvar)
                 .logConsole(new DefaultLogConsole())
                 .execute()
                 .hasFailed()) {
