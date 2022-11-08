@@ -37,6 +37,7 @@ public class CreateKeyPairCommand extends AbstractCommand {
         String[] called = createCalledArray(arguments.subList(2, arguments.size()), secretfile.toString());
         List<String> calledArguments = new ArrayList<>();
         Command command = GitBeaver.commandParser().parseCommand(called, calledArguments);
+        Log.log("Calling command: "+String.join(" ",command.keywords())+" "+String.join(" ", calledArguments));
         command.execute(variables, workSpace, calledArguments);
         SecurityManagement.deleteSecretFile(secretfile);
     }
