@@ -23,7 +23,7 @@ import static org.jkube.logging.Log.onException;
  */
 public class CreateKeyPairCommand extends AbstractCommand {
 
-    private static final String SECRET_FILE_VARIABLE = "masterkey";
+    private static final String SECRET_FILE_MARKER = "%";
 
     public CreateKeyPairCommand() {
         super(3, null,  "with", "new", "master", "key");
@@ -34,13 +34,20 @@ public class CreateKeyPairCommand extends AbstractCommand {
         int keySize = Integer.parseInt(arguments.get(0));
         expectArg(1, "bits", arguments);
         Path secretfile = SecurityManagement.createSecretFile(SecurityManagement.createKeyPair(keySize));
-        List<String> called = arguments.subList(2, arguments.size());
+        String[] called = createCalledArray(arguments.subList(2, arguments.size()), secretfile.toString());
         List<String> calledArguments = new ArrayList<>();
-        Command command = GitBeaver.commandParser().parseCommand(called.toArray(new String[0]), calledArguments);
-        Map<String,String> variablesWithSecret = new HashMap<>(variables);
-        variablesWithSecret.put(SECRET_FILE_VARIABLE, secretfile.toString());
-        command.execute(variablesWithSecret, workSpace, calledArguments);
+        Command command = GitBeaver.commandParser().parseCommand(called, calledArguments);
+        command.execute(variables, workSpace, calledArguments);
         SecurityManagement.deleteSecretFile(secretfile);
+    }
+
+    private String[] createCalledArray(List<String> arguments, String secretPath) {
+        String[] res = new String[arguments.size()];
+        int i = 0;
+        for (String arg : arguments) {
+            res[i++] = SECRET_FILE_MARKER.equals(arg) ? secretPath : arg;
+        }
+        return res;
     }
 
 }
