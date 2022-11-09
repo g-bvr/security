@@ -26,6 +26,7 @@ public class SecurityManagement {
         if (keypair == null) {
             return null;
         }
+        Log.log("Read key string with length "+keypair.length());
         return onException(() -> new PublicPrivateEncryption(keypair)).fail("could not create Encryption object");
     }
 

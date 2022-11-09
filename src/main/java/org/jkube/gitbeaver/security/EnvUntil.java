@@ -26,11 +26,11 @@ public class EnvUntil {
         checkSetInSystem(envvar);
     }
 
-    private static void checkSetInJVM(String envvar) {
-        Log.log(envvar+" is set in JVM to "+System.getenv());
+    static void checkSetInJVM(String envvar) {
+        Log.log(envvar+" is set in JVM to "+System.getenv(envvar));
     }
 
-    private static void checkSetInSystem(String envvar) {
+    static void checkSetInSystem(String envvar) {
         FileUtil.store(Path.of("show.sh"), List.of("echo $"+envvar));
         List<String> out = new ExternalProcess()
                 .command("sh", "show.sh")
