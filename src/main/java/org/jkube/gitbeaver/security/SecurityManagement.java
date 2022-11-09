@@ -65,7 +65,7 @@ public class SecurityManagement {
         String filename = "secret"+Math.abs(RANDOM.nextLong());
         Path path = SECRETS_DIRECTORY.resolve(filename);
         Log.log("Creating secret file: "+path);
-        FileUtil.store(path, List.of(secret));
+        FileUtil.storeWithoutNewline(path, secret);
         return path;
     }
 

@@ -35,7 +35,7 @@ public class PublicPrivateEncryption {
 
     public PublicPrivateEncryption(String keypair) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException {
         String[] split = keypair.split(SEPARATOR);
-        Log.log("Split key string into public-private pair with sizes: "+split[0].length()+","+split[0].length());
+        Log.log("Split key string into public-private pair with sizes: "+split[0].length()+","+split[1].length());
         Base64.Decoder dec = Base64.getDecoder();
         KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
         EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(dec.decode(split[0]));
