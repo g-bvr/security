@@ -47,7 +47,7 @@ public class SecurityManagement {
             Log.warn("Master key is not set yet");
             return null;
         }
-        onException(() -> EnvUntil.clear(MASTER_KEY_ENV_VARIABLE)).fail("Could not delete masterkey env variable");
+        onException(() -> EnvUntil.clear(MASTER_KEY_ENV_VARIABLE)).warn("Could not delete masterkey env variable");
         return masterkey;
     }
 
