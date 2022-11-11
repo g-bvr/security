@@ -25,7 +25,7 @@ public class EncryptCommand extends AbstractCommand {
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
         String secret = arguments.get(0);
-        expectArg(1, "into", arguments);
+        expectArg(1, "=>", arguments);
         String variable = arguments.get(2);
         variables.put(variable, SecurityManagement.encrypt(secret));
         Log.log("Stored encrypted secret in variable "+variable);
