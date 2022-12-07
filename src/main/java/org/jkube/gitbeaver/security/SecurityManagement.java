@@ -1,5 +1,6 @@
 package org.jkube.gitbeaver.security;
 
+import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.util.FileUtil;
 import org.jkube.logging.Log;
 import org.jkube.util.Expect;
@@ -12,7 +13,6 @@ import static org.jkube.logging.Log.onException;
 
 public class SecurityManagement {
 
-    private static final Path SECRETS_DIRECTORY = Path.of("/secret/");
     private static final String MASTER_KEY_ENV_VARIABLE = "gitbeaver-masterkey";
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
@@ -61,9 +61,9 @@ public class SecurityManagement {
     }
 
     public static Path createSecretFile(String secret) {
-        FileUtil.createIfNotExists(SECRETS_DIRECTORY);
+        FileUtil.createIfNotExists(GitBeaver.SECRETS_DIRECTORY);
         String filename = "secret"+Math.abs(RANDOM.nextLong());
-        Path path = SECRETS_DIRECTORY.resolve(filename);
+        Path path = GitBeaver.SECRETS_DIRECTORY.resolve(filename);
         Log.log("Creating secret file: "+path);
         FileUtil.storeWithoutNewline(path, secret);
         return path;
