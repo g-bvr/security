@@ -6,11 +6,7 @@ import org.jkube.gitbeaver.WorkSpace;
 import org.jkube.gitbeaver.interfaces.Command;
 import org.jkube.gitbeaver.security.SecretType;
 import org.jkube.gitbeaver.security.SecurityManagement;
-import org.jkube.gitbeaver.util.FileUtil;
-import org.jkube.logging.Log;
-import org.jkube.util.Expect;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,13 +18,11 @@ import static org.jkube.logging.Log.onException;
 /**
  * Usage: git clone providerUrl repositoryName [tag]
  */
-public class WithSecretInFileCommand extends AbstractCommand {
+public class WithSecretCommand extends AbstractCommand {
 
-    private static final String PROTOCOL_SEPARATOR = "://";
-    private static final String CREDENTIALS_SEPARATOR = "@";
     private static final String SECRET_FILE_VARIABLE = "secret";
 
-    public WithSecretInFileCommand() {
+    public WithSecretCommand() {
         super(2, null, "with", "secret");
     }
 

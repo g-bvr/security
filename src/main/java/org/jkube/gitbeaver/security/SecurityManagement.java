@@ -61,8 +61,11 @@ public class SecurityManagement {
     }
 
     public static Path createSecretFile(String secret) {
+        return createSecretFile(secret, "secret"+Math.abs(RANDOM.nextLong()));
+    }
+
+    public static Path createSecretFile(String secret, String filename) {
         FileUtil.createIfNotExists(GitBeaver.SECRETS_DIRECTORY);
-        String filename = "secret"+Math.abs(RANDOM.nextLong());
         Path path = GitBeaver.SECRETS_DIRECTORY.resolve(filename);
         Log.log("Creating secret file: "+path);
         FileUtil.storeWithoutNewline(path, secret);
