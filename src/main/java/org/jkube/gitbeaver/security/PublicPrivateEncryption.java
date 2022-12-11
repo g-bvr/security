@@ -21,6 +21,8 @@ public class PublicPrivateEncryption {
 
     public static final String SALT = "lkjbeioxhekjbcbcklemcnekjcbekjnclkenckjbekjcnelcnjeowijweobckwlhnwcobwoncownco";
 
+    private final PublicKey publicKey;
+
     private final Cipher encryptCipher;
     private final Cipher decryptCipher;
 
@@ -39,7 +41,7 @@ public class PublicPrivateEncryption {
         Base64.Decoder dec = Base64.getDecoder();
         KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
         EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(dec.decode(split[0]));
-        PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+        publicKey = keyFactory.generatePublic(publicKeySpec);
         encryptCipher = Cipher.getInstance(ALGORITHM);
         encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
         EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(dec.decode(split[1]));
@@ -56,6 +58,7 @@ public class PublicPrivateEncryption {
     }
 
     public String encrypt(String secret) throws IllegalBlockSizeException, BadPaddingException {
+        Log.onException(() -> encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey)).fail("Could not init cipher");
         byte[] secretMessageBytes = (secret+SALT).getBytes(StandardCharsets.UTF_8);
         byte[] encryptedMessageBytes = encryptCipher.doFinal(secretMessageBytes);
         return Base64.getEncoder().encodeToString(encryptedMessageBytes);
