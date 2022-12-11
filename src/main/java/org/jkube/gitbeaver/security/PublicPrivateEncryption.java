@@ -22,7 +22,7 @@ public class PublicPrivateEncryption {
     public static final String SALT = "lkjbeioxhekjbcbcklemcnekjcbekjnclkenckjbekjcnelcnjeowijweobckwlhnwcobwoncownco";
 
     private final PublicKey publicKey;
-    private final Cipher decryptCipher;
+    private final PrivateKey privateKey;
 
     public static String createKeyPair(int keySize) throws NoSuchAlgorithmException {
         KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM);
@@ -41,13 +41,12 @@ public class PublicPrivateEncryption {
         EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(dec.decode(split[0]));
         publicKey = keyFactory.generatePublic(publicKeySpec);
         EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(dec.decode(split[1]));
-        PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
-        decryptCipher = Cipher.getInstance(ALGORITHM);
-        decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
+        privateKey = keyFactory.generatePrivate(privateKeySpec);
     }
 
     public String decrypt(String encrypted) throws IllegalBlockSizeException, BadPaddingException {
         byte[] encryptedMessageBytes = Base64.getDecoder().decode(encrypted);
+        Cipher decryptCipher = Log.onException(this::createDecryptCipher).fail("Could not create cipher");
         byte[] decryptedMessageBytes = decryptCipher.doFinal(encryptedMessageBytes);
         String res = new String(decryptedMessageBytes, StandardCharsets.UTF_8);
         return res.substring(0, res.length()-SALT.length());
@@ -64,6 +63,12 @@ public class PublicPrivateEncryption {
     private Cipher createEncryptCipher() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        return cipher;
+    }
+
+    private Cipher createDecryptCipher() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher;
     }
 
