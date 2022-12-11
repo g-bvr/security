@@ -54,6 +54,7 @@ public class PublicPrivateEncryption {
     }
 
     public String encrypt(String secret) throws IllegalBlockSizeException, BadPaddingException {
+        Log.log("Secret: "+secret);
         Cipher encryptCipher = Log.onException(this::createEncryptCipher).fail("Could not create cipher");
         byte[] secretMessageBytes = (secret+SALT).getBytes(StandardCharsets.UTF_8);
         byte[] encryptedMessageBytes = encryptCipher.doFinal(secretMessageBytes);
