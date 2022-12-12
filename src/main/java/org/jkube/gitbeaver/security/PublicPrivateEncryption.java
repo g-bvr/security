@@ -17,9 +17,7 @@ import java.util.Base64;
 public class PublicPrivateEncryption {
 
     private static final String SEPARATOR = "#";
-    public static final String ALGORITHM = "RSA";
-
-    public static final String SALT = "lkjbeioxhekjbcbcklemcnekjcbekjnclkenckjbekjcnelcnjeowijweobckwlhnwcobwoncownco";
+    public static final String ALGORITHM = "RSA/ECB/OAEPWithSHA1AndMGF1Padding";
 
     private final PublicKey publicKey;
     private final PrivateKey privateKey;
@@ -33,7 +31,7 @@ public class PublicPrivateEncryption {
                 +enc.encodeToString(pair.getPrivate().getEncoded());
     }
 
-    public PublicPrivateEncryption(String keypair) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException {
+    public PublicPrivateEncryption(String keypair) throws NoSuchAlgorithmException, InvalidKeySpecException {
         String[] split = keypair.split(SEPARATOR);
         Log.log("Split key string into public-private pair with sizes: "+split[0].length()+","+split[1].length());
         Base64.Decoder dec = Base64.getDecoder();
@@ -48,14 +46,13 @@ public class PublicPrivateEncryption {
         byte[] encryptedMessageBytes = Base64.getDecoder().decode(encrypted);
         Cipher decryptCipher = Log.onException(this::createDecryptCipher).fail("Could not create cipher");
         byte[] decryptedMessageBytes = decryptCipher.doFinal(encryptedMessageBytes);
-        String res = new String(decryptedMessageBytes, StandardCharsets.UTF_8);
-        return res.substring(0, res.length()-SALT.length());
+        return new String(decryptedMessageBytes, StandardCharsets.UTF_8);
     }
 
     public String encrypt(String secret) throws IllegalBlockSizeException, BadPaddingException {
         Log.log("Secret: "+secret);
         Cipher encryptCipher = Log.onException(this::createEncryptCipher).fail("Could not create cipher");
-        byte[] secretMessageBytes = (secret+SALT).getBytes(StandardCharsets.UTF_8);
+        byte[] secretMessageBytes = secret.getBytes(StandardCharsets.UTF_8);
         byte[] encryptedMessageBytes = encryptCipher.doFinal(secretMessageBytes);
         return Base64.getEncoder().encodeToString(encryptedMessageBytes);
     }
