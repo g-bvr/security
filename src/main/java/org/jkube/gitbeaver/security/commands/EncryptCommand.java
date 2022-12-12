@@ -19,14 +19,15 @@ import static org.jkube.logging.Log.onException;
 public class EncryptCommand extends AbstractCommand {
     
     public EncryptCommand() {
-        super(3, 3, "security", "encrypt");
+        super(3, null, "security", "encrypt");
     }
 
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        String secret = arguments.get(0);
-        expectArg(1, "=>", arguments);
-        String variable = arguments.get(2);
+        int num = arguments.size();
+        String secret = String.join(" ", arguments.subList(0, num-2));
+        expectArg(num-2, "=>", arguments);
+        String variable = arguments.get(num-1);
         variables.put(variable, SecurityManagement.encrypt(secret));
         Log.log("Stored encrypted secret in variable "+variable);
     }
