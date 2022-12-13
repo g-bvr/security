@@ -5,6 +5,9 @@ import org.jkube.util.Expect;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +20,7 @@ public class SecretHolder {
         this.encryption = encryption;
     }
 
-    public String getSecret(String secretId, SecretType secretType) throws IllegalBlockSizeException, BadPaddingException {
+    public String getSecret(String secretId, SecretType secretType) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         String encrypted = secrets.get(secretType).get(secretId);
         Expect.notNull(encrypted).elseFail("No secret registered of type "+secretId+" with id: "+secretId);
         return encryption.decrypt(encrypted);

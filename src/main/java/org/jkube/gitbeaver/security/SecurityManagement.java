@@ -30,8 +30,8 @@ public class SecurityManagement {
         return onException(() -> new PublicPrivateEncryption(keypair)).fail("could not create Encryption object");
     }
 
-    public static String createKeyPair(int keySize) {
-        return onException(() -> PublicPrivateEncryption.createKeyPair(keySize)).fail("Could not create key of size "+keySize);
+    public static String createKeyPair(int asymmetricKeySize, int symmetricKeySize) {
+        return onException(() -> PublicPrivateEncryption.createKeyPair(asymmetricKeySize, symmetricKeySize)).fail("Could not create key");
     }
 
     public static boolean masterKeyWasFound() {

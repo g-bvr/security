@@ -26,15 +26,16 @@ public class CreateKeyPairCommand extends AbstractCommand {
     private static final String SECRET_FILE_MARKER = "%";
 
     public CreateKeyPairCommand() {
-        super(3, null,  "with", "new", "master", "key");
+        super(4, null,  "with", "new", "master", "key");
     }
 
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        int keySize = Integer.parseInt(arguments.get(0));
-        expectArg(1, "bits", arguments);
-        Path secretfile = SecurityManagement.createSecretFile(SecurityManagement.createKeyPair(keySize));
-        String[] called = createCalledArray(arguments.subList(2, arguments.size()), secretfile.toString());
+        int asymmetricKeySize = Integer.parseInt(arguments.get(0));
+        int symmetricKeySize = Integer.parseInt(arguments.get(1));
+        expectArg(2, "bits", arguments);
+        Path secretfile = SecurityManagement.createSecretFile(SecurityManagement.createKeyPair(asymmetricKeySize, symmetricKeySize));
+        String[] called = createCalledArray(arguments.subList(3, arguments.size()), secretfile.toString());
         List<String> calledArguments = new ArrayList<>();
         Command command = GitBeaver.commandParser().parseCommand(called, calledArguments);
         Log.log("Calling command: "+String.join(" ",command.keywords())+" "+String.join(" ", calledArguments));
