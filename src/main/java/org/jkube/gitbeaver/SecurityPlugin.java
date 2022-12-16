@@ -13,8 +13,7 @@ import org.jkube.logging.Log;
                     EncryptCommand.class,
                     MasterKeyPresentCommand.class,
                     WithCredentialsGitCloneCommand.class,
-                    WithSecretCommand.class,
-                    WithSecretInCommand.class
+                    WithSecretCommand.class
             );
         }
 
