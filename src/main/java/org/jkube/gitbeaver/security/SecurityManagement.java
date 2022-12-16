@@ -16,8 +16,6 @@ public class SecurityManagement {
     private static final String MASTER_KEY_ENV_VARIABLE = "gitbeaver-masterkey";
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
-    private static final SecretHolder SECRET_HOLDER = new SecretHolder(ENCRYPTION);
-
     private static final Random RANDOM = new Random();
     private static final String NOT_SET = "not-set";
 
@@ -56,8 +54,11 @@ public class SecurityManagement {
         return onException(() -> ENCRYPTION.encrypt(secret)).fail("could not encrypt secret");
     }
 
-    public static String getSecret(String keyId, SecretType type) {
-        return onException(() -> SECRET_HOLDER.getSecret(keyId, type)).fail("Could not decrypt secret "+keyId+" of type "+type);
+    public static String getSecret(Path path) {
+        String data = String.join("", FileUtil.readLines(path));
+        return ENCRYPTION == null
+                ? data
+                : onException(() -> ENCRYPTION.decrypt(data)).fail("Could not decrypt secret in file "+path);
     }
 
     public static Path createSecretFile(String secret) {
@@ -72,9 +73,13 @@ public class SecurityManagement {
         return path;
     }
 
-    public static void deleteSecretFile(Path file) {
-        Log.log("Deleting secret file: "+file);
-        FileUtil.delete(file);
+    public static void deleteSecretFile(String filename) {
+      deleteSecretFile(GitBeaver.SECRETS_DIRECTORY.resolve(filename));
+    }
+
+    public static void deleteSecretFile(Path path) {
+        Log.log("Deleting secret file: "+path);
+        FileUtil.delete(path);
     }
 
 }

@@ -3,9 +3,7 @@ package org.jkube.gitbeaver.security.commands;
 import org.jkube.gitbeaver.AbstractCommand;
 import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.WorkSpace;
-import org.jkube.gitbeaver.security.SecretType;
 import org.jkube.gitbeaver.security.SecurityManagement;
-import org.jkube.logging.Log;
 import org.jkube.util.Expect;
 
 import java.net.URL;
@@ -28,7 +26,7 @@ public class WithCredentialsGitCloneCommand extends AbstractCommand {
 
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        String credentials = SecurityManagement.getSecret(arguments.get(0), SecretType.GIT);
+        String credentials = SecurityManagement.getSecret(workSpace.getAbsolutePath(arguments.get(0)));
         URL url = addGitCredentials(arguments.get(1), credentials);
         expectArg(2, "clone", arguments);
         String repository = arguments.get(3);
