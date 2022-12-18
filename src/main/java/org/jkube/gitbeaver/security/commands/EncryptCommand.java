@@ -37,7 +37,7 @@ public class EncryptCommand extends AbstractCommand {
 
     private String format(String encrypted) {
         StringBuilder sb = new StringBuilder();
-        sb.append("# encrypted secret (created on ").append(new Date()).append(")\\n#\\n");
+        sb.append("// encrypted secret (created on ").append(new Date()).append(")\\n");
         String remain = encrypted;
         while (remain.length() > LINE_LENGTH) {
             sb.append(remain, 0, LINE_LENGTH);

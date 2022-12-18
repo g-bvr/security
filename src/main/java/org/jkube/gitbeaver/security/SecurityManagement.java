@@ -8,6 +8,7 @@ import org.jkube.util.Expect;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.jkube.logging.Log.onException;
 
@@ -18,6 +19,7 @@ public class SecurityManagement {
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
     private static final Random RANDOM = new Random();
     private static final String NOT_SET = "not-set";
+    private static final String COMMENT_MARKER = "//";
 
     private static PublicPrivateEncryption createEncryption() {
         String keypair = burnAfterReading();
@@ -55,7 +57,10 @@ public class SecurityManagement {
     }
 
     public static String getSecret(Path path) {
-        String data = String.join("", FileUtil.readLines(path));
+        String data = FileUtil.readLines(path)
+                .stream()
+                .filter(line -> !line.trim().startsWith(COMMENT_MARKER))
+                .collect(Collectors.joining(""));
         return ENCRYPTION == null
                 ? data
                 : onException(() -> ENCRYPTION.decrypt(data)).fail("Could not decrypt secret in file "+path);
