@@ -41,7 +41,7 @@ public class EnvUntil {
     }
 
     private static void clearInSystem(String envvar) {
-        FileUtil.store(Path.of("unset.sh"), List.of("export "+envvar+"=deleted", "export "+envvar));
+        FileUtil.store(Path.of("unset.sh"), List.of("export "+envvar+"=deleted", "export "+envvar, "echo "+envvar+": $"+envvar));
         if (new ExternalProcess()
                 .command("sh", "unset.sh")
                 .logConsole(new DefaultLogConsole())
