@@ -40,10 +40,8 @@ public class WithSecretCommand extends AbstractCommand {
             command.execute(variablesWithSecret, workSpace, calledArguments);
         } else if (targetType.equalsIgnoreCase("file")) {
             SecurityManagement.createSecretFile(secret, target);
-            Log.log("Secret: "+secret);
             command.execute(variables, workSpace, calledArguments);
-           // SecurityManagement.deleteSecretFile(target);
-            FileUtil.copyTree(GitBeaver.SECRETS_DIRECTORY.resolve(target), Path.of("/workdir/secretcopy"));
+            SecurityManagement.deleteSecretFile(target);
         } else Log.error("expected FILE or VARIABLE, found: "+targetType);
     }
 
