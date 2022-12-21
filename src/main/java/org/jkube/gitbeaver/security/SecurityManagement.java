@@ -41,12 +41,12 @@ public class SecurityManagement {
     private static String burnAfterReading() {
         Expect.isTrue(MASTER_KEY_FILE.toFile().exists()).elseFail("File with masterkey not found");
         List<String> lines = FileUtil.readLines(MASTER_KEY_FILE);
-        Expect.atMost(lines.size(), 1).elseFail("masterkey file has multiple lines");
-        if (lines.isEmpty()) {
+        Expect.size(lines, 1).elseFail("masterkey file has multiple lines");
+        String masterkey = lines.get(0);
+        if (masterkey.isEmpty()) {
             Log.log("Master key env variable is not set.");
             return null;
         }
-        String masterkey = lines.get(0);
         if (NOT_SET.equals(masterkey)) {
             Log.warn("Master key is not set yet");
             return null;
