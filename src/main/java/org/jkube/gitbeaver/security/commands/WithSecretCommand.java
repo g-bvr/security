@@ -40,7 +40,7 @@ public class WithSecretCommand extends AbstractCommand {
             SecurityManagement.createSecretFile(secret, target);
             Log.log("Secret: "+secret);
             command.execute(variables, workSpace, calledArguments);
-            SecurityManagement.deleteSecretFile(target);
+           // SecurityManagement.deleteSecretFile(target);
         } else Log.error("expected FILE or VARIABLE, found: "+targetType);
     }
 
