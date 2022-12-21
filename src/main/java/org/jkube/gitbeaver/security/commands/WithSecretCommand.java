@@ -38,6 +38,7 @@ public class WithSecretCommand extends AbstractCommand {
             command.execute(variablesWithSecret, workSpace, calledArguments);
         } else if (targetType.equalsIgnoreCase("file")) {
             SecurityManagement.createSecretFile(secret, target);
+            Log.log("Secret: "+secret);
             command.execute(variables, workSpace, calledArguments);
             SecurityManagement.deleteSecretFile(target);
         } else Log.error("expected FILE or VARIABLE, found: "+targetType);
