@@ -14,7 +14,7 @@ import static org.jkube.logging.Log.onException;
 
 public class SecurityManagement {
 
-    private static final String MASTER_KEY_ENV_VARIABLE = "GITBEAVER_MASTERKEY";
+    private static final Path MASTER_KEY_FILE = Path.of("/masterkey");
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
     private static final Random RANDOM = new Random();
@@ -39,16 +39,20 @@ public class SecurityManagement {
     }
 
     private static String burnAfterReading() {
-        String masterkey = System.getenv(MASTER_KEY_ENV_VARIABLE);
-        if (masterkey == null) {
+        Expect.isTrue(MASTER_KEY_FILE.toFile().exists()).elseFail("File with masterkey not found");
+        List<String> lines = FileUtil.readLines(MASTER_KEY_FILE);
+        Expect.atMost(lines.size(), 1).elseFail("masterkey file has multiple lines");
+        if (lines.isEmpty()) {
             Log.log("Master key env variable is not set.");
             return null;
         }
+        String masterkey = lines.get(0);
         if (NOT_SET.equals(masterkey)) {
             Log.warn("Master key is not set yet");
             return null;
         }
-        onException(() -> EnvUntil.clear(MASTER_KEY_ENV_VARIABLE)).warn("Could not delete masterkey env variable");
+        FileUtil.delete(MASTER_KEY_FILE);
+        Expect.isFalse(MASTER_KEY_FILE.toFile().exists()).elseFail("File with masterkey is still present");
         return masterkey;
     }
 
