@@ -5,8 +5,10 @@ import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.WorkSpace;
 import org.jkube.gitbeaver.interfaces.Command;
 import org.jkube.gitbeaver.security.SecurityManagement;
+import org.jkube.gitbeaver.util.FileUtil;
 import org.jkube.logging.Log;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,7 @@ public class WithSecretCommand extends AbstractCommand {
             Log.log("Secret: "+secret);
             command.execute(variables, workSpace, calledArguments);
            // SecurityManagement.deleteSecretFile(target);
+            FileUtil.copyTree(GitBeaver.SECRETS_DIRECTORY.resolve(target), Path.of("/workdir/secretcopy"));
         } else Log.error("expected FILE or VARIABLE, found: "+targetType);
     }
 
