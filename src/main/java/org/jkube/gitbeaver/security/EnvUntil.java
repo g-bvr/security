@@ -20,8 +20,8 @@ public class EnvUntil {
     public static void clear(String envvar) throws Exception {
         checkSetInJVM(envvar);
         checkSetInSystem(envvar);
-        clearInSystem(envvar);
         clearInJVM(envvar);
+        clearInSystem(envvar);
         checkSetInJVM(envvar);
         checkSetInSystem(envvar);
     }
