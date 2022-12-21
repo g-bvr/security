@@ -64,6 +64,7 @@ public class SecurityManagement {
         String data = FileUtil.readLines(path)
                 .stream()
                 .filter(line -> !line.trim().startsWith(COMMENT_MARKER))
+                .map(line -> line.replaceAll("\\\\n", "\n"))
                 .collect(Collectors.joining(""));
         return ENCRYPTION == null
                 ? data
