@@ -14,7 +14,7 @@ import static org.jkube.logging.Log.onException;
 
 public class SecurityManagement {
 
-    private static final String MASTER_KEY_ENV_VARIABLE = "gitbeaver-masterkey";
+    private static final String MASTER_KEY_ENV_VARIABLE = "GITBEAVER_MASTERKEY";
 
     private static final PublicPrivateEncryption ENCRYPTION = createEncryption();
     private static final Random RANDOM = new Random();

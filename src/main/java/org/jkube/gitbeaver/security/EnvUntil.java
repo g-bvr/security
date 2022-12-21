@@ -37,7 +37,7 @@ public class EnvUntil {
                 .logConsole(new NoLogConsole())
                 .execute()
                 .getOutput();
-        Log.log(envvar+" is set system to "+String.join(" ", out));
+        Log.log(envvar+" is set in system to "+String.join(" ", out));
     }
 
     private static void clearInSystem(String envvar) {
