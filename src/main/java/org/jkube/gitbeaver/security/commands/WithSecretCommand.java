@@ -19,8 +19,6 @@ import java.util.Map;
  */
 public class WithSecretCommand extends AbstractCommand {
 
-    private static final String SECRET_FILE_VARIABLE = "secret";
-
     public WithSecretCommand() {
         super(5, null, "with", "secret");
     }
