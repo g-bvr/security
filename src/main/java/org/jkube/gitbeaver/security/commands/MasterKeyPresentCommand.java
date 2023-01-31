@@ -3,9 +3,7 @@ package org.jkube.gitbeaver.security.commands;
 import org.jkube.gitbeaver.AbstractCommand;
 import org.jkube.gitbeaver.WorkSpace;
 import org.jkube.gitbeaver.security.SecurityManagement;
-import org.jkube.logging.Log;
 
-import java.util.List;
 import java.util.Map;
 
 public class MasterKeyPresentCommand extends AbstractCommand {

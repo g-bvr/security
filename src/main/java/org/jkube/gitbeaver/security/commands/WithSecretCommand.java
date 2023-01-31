@@ -5,13 +5,8 @@ import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.WorkSpace;
 import org.jkube.gitbeaver.interfaces.Command;
 import org.jkube.gitbeaver.security.SecurityManagement;
-import org.jkube.gitbeaver.util.FileUtil;
-import org.jkube.logging.Log;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.jkube.gitbeaver.CommandParser.REST;

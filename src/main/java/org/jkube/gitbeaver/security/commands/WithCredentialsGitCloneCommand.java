@@ -7,7 +7,6 @@ import org.jkube.gitbeaver.security.SecurityManagement;
 import org.jkube.util.Expect;
 
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 
 import static org.jkube.logging.Log.onException;

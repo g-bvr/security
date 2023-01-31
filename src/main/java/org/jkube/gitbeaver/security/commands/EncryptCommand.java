@@ -1,19 +1,14 @@
 package org.jkube.gitbeaver.security.commands;
 
 import org.jkube.gitbeaver.AbstractCommand;
-import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.WorkSpace;
-import org.jkube.gitbeaver.security.PublicPrivateEncryption;
 import org.jkube.gitbeaver.security.SecurityManagement;
 import org.jkube.logging.Log;
-import org.jkube.util.Expect;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import static org.jkube.gitbeaver.CommandParser.REST;
-import static org.jkube.logging.Log.onException;
 
 public class EncryptCommand extends AbstractCommand {
 
