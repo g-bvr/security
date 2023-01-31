@@ -12,26 +12,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static org.jkube.gitbeaver.CommandParser.REST;
 import static org.jkube.logging.Log.onException;
 
-/**
- * Usage: git clone providerUrl repositoryName [tag]
- */
 public class EncryptCommand extends AbstractCommand {
 
     private static final int LINE_LENGTH = 80;
+    private static final String VARIABLE = "variable";
 
     public EncryptCommand() {
-        super(3, null, "security", "encrypt");
+        super("encrypt a secret value");
+        commandline("SECURITY ENCRYPT * INTO VARIABLE "+VARIABLE);
+        argument(REST, "the string to be encrypted");
+        argument(VARIABLE, "the variable into which the result of the encryption shall be stored");
     }
 
     @Override
-    public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        int num = arguments.size();
-        String secret = String.join(" ", arguments.subList(0, num-2));
-        expectArg(num-2, "=>", arguments);
-        String variable = arguments.get(num-1);
-        variables.put(variable, format(SecurityManagement.encrypt(secret)));
+    public void execute(Map<String, String> variables, WorkSpace workSpace, Map<String, String> arguments) {
+        String variable = arguments.get(VARIABLE);
+        variables.put(variable, format(SecurityManagement.encrypt(arguments.get(REST))));
         Log.log("Stored encrypted secret in variable "+variable);
     }
 

@@ -8,18 +8,19 @@ import org.jkube.logging.Log;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Usage: git clone providerUrl repositoryName [tag]
- */
 public class MasterKeyPresentCommand extends AbstractCommand {
 
+    private static final String VARIABLE = "variable";
+
     public MasterKeyPresentCommand() {
-        super(1, 1, "security", "masterkey", "present", "=>");
+        super("Cchek if masterkey is available");
+        commandline("SECURITY MASTERKEY PRESENT => "+VARIABLE);
+        argument(VARIABLE, "the variable which obtains true/false as value depending if the masterkey is set");
     }
 
     @Override
-    public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        String variable = arguments.get(0);
+    public void execute(Map<String, String> variables, WorkSpace workSpace, Map<String, String> arguments) {
+        String variable = arguments.get(VARIABLE);
         variables.put(variable, String.valueOf(SecurityManagement.masterKeyWasFound()));
     }
 

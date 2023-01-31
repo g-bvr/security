@@ -12,25 +12,33 @@ import java.util.Map;
 
 import static org.jkube.logging.Log.onException;
 
-/**
- * Usage: git clone providerUrl repositoryName [tag]
- */
 public class WithCredentialsGitCloneCommand extends AbstractCommand {
 
     private static final String PROTOCOL_SEPARATOR = "://";
     private static final String CREDENTIALS_SEPARATOR = "@";
+    private static final String CREDENTIALS = "credentials";
+
+    private static final String BASE_URL = "baseurl";
+    private static final String REPOSITORY = "repository";
+    private static final String TAG = "tag";
+
 
     public WithCredentialsGitCloneCommand() {
-        super(4, 5, "git", "with", "credentials");
+        super("clone a git repository using encrypted credentials");
+        commandlineVariant("GIT WITH CREDENTIALS "+CREDENTIALS+" CLONE "+BASE_URL+" "+REPOSITORY, "clone the default branch of the repository");
+        commandlineVariant("GIT WITH CREDENTIALS "+CREDENTIALS+" CLONE "+BASE_URL+" "+REPOSITORY+" "+TAG, "clone the specified branch or tag of the repository");
+        argument(CREDENTIALS, "Path of encrypted credentials file (relative to current workspace)");
+        argument(BASE_URL, "The url prefix of the repository (not including the actual repo name)");
+        argument(REPOSITORY, "The name of the repository (which together with the base url constitutes the url of the repository)");
+        argument(TAG, "Optional argument to specify either a branch or a tag which shall be checked out (if omitted the default branch will be used)");
     }
 
     @Override
-    public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        String credentials = SecurityManagement.getSecret(workSpace.getAbsolutePath(arguments.get(0)));
-        URL url = addGitCredentials(arguments.get(1), credentials);
-        expectArg(2, "clone", arguments);
-        String repository = arguments.get(3);
-        String tag = arguments.size() == 5 ? arguments.get(4) : null;
+    public void execute(Map<String, String> variables, WorkSpace workSpace, Map<String, String> arguments) {
+        String credentials = SecurityManagement.getSecret(workSpace.getAbsolutePath(arguments.get(CREDENTIALS)));
+        URL url = addGitCredentials(arguments.get(REPOSITORY), credentials);
+        String repository = arguments.get(REPOSITORY);
+        String tag = arguments.get(TAG);
         GitBeaver.gitCloner().clone(workSpace.getWorkdir(), url, repository, tag, GitBeaver.getApplicationLogger(variables));
     }
 

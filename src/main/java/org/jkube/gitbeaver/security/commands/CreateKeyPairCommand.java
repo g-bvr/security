@@ -16,40 +16,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.jkube.gitbeaver.CommandParser.REST;
 import static org.jkube.logging.Log.onException;
 
-/**
- * Usage: git clone providerUrl repositoryName [tag]
- */
 public class CreateKeyPairCommand extends AbstractCommand {
 
     private static final String SECRET_FILE_MARKER = "%";
+    private static final String ASYMMETRIC_SIZE = "asmymetricKeyBits";
+    private static final String SYMMETRIC_SIZE = "smymetricKeyBits";
 
     public CreateKeyPairCommand() {
-        super(4, null,  "with", "new", "master", "key");
+        super("create a new public/private key pair and execute a command");
+        commandline("WITH NEW MASTER KEY SIZE "+ASYMMETRIC_SIZE+","+SYMMETRIC_SIZE+" BITS DO *");
+        argument(ASYMMETRIC_SIZE, "number of bits to use for asymmetric key");
+        argument(SYMMETRIC_SIZE, "number of bits to use for symmetric key");
+        argument(REST, "command to be executed, the name of the file with the created key can be referred to with "+SECRET_FILE_MARKER);
     }
 
     @Override
-    public void execute(Map<String, String> variables, WorkSpace workSpace, List<String> arguments) {
-        int asymmetricKeySize = Integer.parseInt(arguments.get(0));
-        int symmetricKeySize = Integer.parseInt(arguments.get(1));
-        expectArg(2, "bits", arguments);
+    public void execute(Map<String, String> variables, WorkSpace workSpace, Map<String, String> arguments) {
+        int asymmetricKeySize = Integer.parseInt(arguments.get(ASYMMETRIC_SIZE));
+        int symmetricKeySize = Integer.parseInt(arguments.get(SYMMETRIC_SIZE));
         Path secretfile = SecurityManagement.createSecretFile(SecurityManagement.createKeyPair(asymmetricKeySize, symmetricKeySize));
-        String[] called = createCalledArray(arguments.subList(3, arguments.size()), secretfile.toString());
-        List<String> calledArguments = new ArrayList<>();
+        String called = arguments.get(REST).replaceAll(SECRET_FILE_MARKER, secretfile.toString());
+        Map<String, String> calledArguments = new HashMap<>();
         Command command = GitBeaver.commandParser().parseCommand(called, calledArguments);
-        Log.log("Calling command: "+String.join(" ",command.keywords())+" "+String.join(" ", calledArguments));
+        Log.log("Calling command: "+called);
         command.execute(variables, workSpace, calledArguments);
         SecurityManagement.deleteSecretFile(secretfile);
-    }
-
-    private String[] createCalledArray(List<String> arguments, String secretPath) {
-        String[] res = new String[arguments.size()];
-        int i = 0;
-        for (String arg : arguments) {
-            res[i++] = SECRET_FILE_MARKER.equals(arg) ? secretPath : arg;
-        }
-        return res;
     }
 
 }
