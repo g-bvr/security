@@ -17,7 +17,7 @@ public class EncryptCommand extends AbstractCommand {
 
     public EncryptCommand() {
         super("encrypt a secret value");
-        commandline("SECURITY ENCRYPT * INTO VARIABLE "+VARIABLE);
+        commandline("SECURITY ENCRYPT * => "+VARIABLE);
         argument(REST, "the string to be encrypted");
         argument(VARIABLE, "the variable into which the result of the encryption shall be stored");
     }
