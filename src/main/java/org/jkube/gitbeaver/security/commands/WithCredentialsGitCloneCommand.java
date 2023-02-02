@@ -35,7 +35,7 @@ public class WithCredentialsGitCloneCommand extends AbstractCommand {
     @Override
     public void execute(Map<String, String> variables, WorkSpace workSpace, Map<String, String> arguments) {
         String credentials = SecurityManagement.getSecret(workSpace.getAbsolutePath(arguments.get(CREDENTIALS)));
-        URL url = addGitCredentials(arguments.get(REPOSITORY), credentials);
+        URL url = addGitCredentials(arguments.get(BASE_URL), credentials);
         String repository = arguments.get(REPOSITORY);
         String tag = arguments.get(TAG);
         GitBeaver.gitCloner().clone(workSpace.getWorkdir(), url, repository, tag, GitBeaver.getApplicationLogger(variables));
