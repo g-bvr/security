@@ -25,6 +25,6 @@ A list of all commands defined by this plugin can be found in this [automaticall
 
 ## Initialization
 
-It initialization of this plugin the file ```/masterkey``` is read. If the file exists, is not empty and is equal to ```not-set```,
+It initialization of this plugin the file ```/masterkey``` is read. If the file exists, is not empty and is not equal to ```not-set```,
 then the master key is read from that file. The file is then deleted to prevent other code from reading it. 
 Thus this plugin should be enabled as early as possible in the plugin setup sequence.
