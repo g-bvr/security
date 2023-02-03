@@ -28,3 +28,13 @@ A list of all commands defined by this plugin can be found in this [automaticall
 It initialization of this plugin the file ```/masterkey``` is read. If the file exists, is not empty and is not equal to ```not-set```,
 then the master key is read from that file. The file is then deleted to prevent other code from reading it. 
 Thus this plugin should be enabled as early as possible in the plugin setup sequence.
+
+## Hints for operating on GCP
+
+The recommended way to store the master key is to use the GCP SecretManager. The master key stored as a GCP secret can by passed to the gitbeaver container as environment variable.
+It is best practice to decouple the creation of the master key secret from individual user operation: The user who triggers the creation 
+of the master key (once, for setup of the gitbeaver ecosystem) does not need any SecretManager permissions to do so.
+
+A convenient way how this can be realized (using the [web-server plugin](https://github.com/g-bvr/web-server)) is 
+illustrated using [these beaver scripts](https://github.com/e-breuninger/git-beaver-gcp/tree/main/gitbeaver) in the public repository
+[e-breuninger/git-beaver-gcp](https://github.com/e-breuninger/git-beaver-gcp) (kindly provided by E. Breuninger GmbH & Co.).
