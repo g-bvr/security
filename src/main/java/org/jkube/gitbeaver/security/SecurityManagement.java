@@ -39,7 +39,10 @@ public class SecurityManagement {
     }
 
     private static String burnAfterReading() {
-        Expect.isTrue(MASTER_KEY_FILE.toFile().exists()).elseFail("File with masterkey not found");
+        if (!MASTER_KEY_FILE.toFile().exists()) {
+            Log.warn("File with masterkey was not found");
+            return null;
+        }
         List<String> lines = FileUtil.readLines(MASTER_KEY_FILE);
         Expect.size(lines, 1).elseFail("masterkey file has multiple lines");
         String masterkey = lines.get(0);
@@ -57,6 +60,10 @@ public class SecurityManagement {
     }
 
     public static String encrypt(String secret) {
+        if (ENCRYPTION == null) {
+            Log.warn("No master key was found, encryption is not possible");
+            return null;
+        }
         return onException(() -> ENCRYPTION.encrypt(secret)).fail("could not encrypt secret");
     }
 
