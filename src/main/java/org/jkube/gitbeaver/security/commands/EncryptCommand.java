@@ -33,7 +33,7 @@ public class EncryptCommand extends AbstractCommand {
             secret = variables.get(variable);
             Expect.notNull(secret).elseFail("Variable is not set: "+variable);
         }
-        variables.put(variable, format(SecurityManagement.encrypt(arguments.get(REST))));
+        variables.put(variable, format(SecurityManagement.encrypt(secret)));
         Log.log("Stored encrypted secret in variable "+variable);
     }
 
