@@ -30,7 +30,7 @@ public class EncryptCommand extends AbstractCommand {
         String variable = arguments.get(VARIABLE);
         String secret = arguments.get(REST);
         if (secret == null) {
-            secret = variables.get(VARIABLE);
+            secret = variables.get(variable);
             Expect.notNull(secret).elseFail("Variable is not set: "+variable);
         }
         variables.put(variable, format(SecurityManagement.encrypt(arguments.get(REST))));
