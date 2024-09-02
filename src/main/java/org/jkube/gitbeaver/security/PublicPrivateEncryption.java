@@ -1,7 +1,7 @@
 package org.jkube.gitbeaver.security;
 
-import org.jkube.logging.Log;
-import org.jkube.util.Expect;
+import org.jkube.gitbeaver.logging.Log;
+import org.jkube.gitbeaver.util.Expect;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;

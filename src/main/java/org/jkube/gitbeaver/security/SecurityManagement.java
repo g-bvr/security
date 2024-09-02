@@ -2,15 +2,15 @@ package org.jkube.gitbeaver.security;
 
 import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.util.FileUtil;
-import org.jkube.logging.Log;
-import org.jkube.util.Expect;
+import org.jkube.gitbeaver.logging.Log;
+import org.jkube.gitbeaver.util.Expect;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static org.jkube.logging.Log.onException;
+import static org.jkube.gitbeaver.logging.Log.onException;
 
 public class SecurityManagement {
 

@@ -3,7 +3,7 @@ package org.jkube.gitbeaver;
 import org.jkube.gitbeaver.plugin.SimplePlugin;
 import org.jkube.gitbeaver.security.SecurityManagement;
 import org.jkube.gitbeaver.security.commands.*;
-import org.jkube.logging.Log;
+import org.jkube.gitbeaver.logging.Log;
 
     public class SecurityPlugin extends SimplePlugin {
 
