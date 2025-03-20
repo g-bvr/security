@@ -5,6 +5,7 @@ import org.jkube.gitbeaver.GitBeaver;
 import org.jkube.gitbeaver.WorkSpace;
 import org.jkube.gitbeaver.interfaces.Command;
 import org.jkube.gitbeaver.security.SecurityManagement;
+import org.jkube.gitbeaver.util.ExternalProcess;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,14 +20,17 @@ public class WithSecretCommand extends AbstractCommand {
     private static final String ENCRYPTED = "encrypted";
     private static final String DECRYPTED = "decrypted";
     private static final String VARIABLE = "variable";
+    private static final String ENV_VARIABLE = "envvariable";
 
     public WithSecretCommand() {
         super("Execute a command using a secret");
-        commandlineVariant("WITH SECRET "+ENCRYPTED+" IN VARIABLE "+VARIABLE+" *", "store decrypted secret into variable before executing the command, deletee variable afterwards");
+        commandlineVariant("WITH SECRET "+ENCRYPTED+" IN VARIABLE "+VARIABLE+" *", "store decrypted secret into gitbeaver variable before executing the command, deletee variable afterwards");
+        commandlineVariant("WITH SECRET "+ENCRYPTED+" IN ENV VARIABLE "+ENV_VARIABLE+" *", "store decrypted secret into environment variable before executing the command, deletee variable afterwards");
         commandlineVariant("WITH SECRET "+ENCRYPTED+" IN FILE "+DECRYPTED+" *", "store decrypted secret into file before executing the command, deletee variable afterwards");
         argument(ENCRYPTED, "the path to the file with the encrypted secret data (relative to current workspace)");
         argument(DECRYPTED, "the name of the file with decrypted secret data (this is not stored in workspace, but stored in a separate special folder)");
         argument(VARIABLE, "the name of the variable into with the decrypted secret data is stored");
+        argument(ENV_VARIABLE, "the name of the env variable into with the decrypted secret data is stored");
         argument(REST, "the command to be executed (the command can use the decrypte secret, but it is deleted again after command execution)");
     }
 
@@ -40,6 +44,14 @@ public class WithSecretCommand extends AbstractCommand {
             Map<String,String> variablesWithSecret = new HashMap<>(variables);
             variablesWithSecret.put(arguments.get(VARIABLE), secret);
             command.execute(variablesWithSecret, workSpace, calledArguments);
+        }  if (arguments.containsKey(VARIABLE)) {
+            // extend existing env variables by secret
+            Map<String,String> variablesWithEnv = new HashMap<>(variables);
+            String envOld = variablesWithEnv.get(ExternalProcess.ENV_MAP_KEY);
+            String envKVString = arguments.get(VARIABLE) + "=" + secret;
+            String envNew = (envOld == null) ? envKVString : envOld + "," + envKVString;
+            variablesWithEnv.put(ExternalProcess.ENV_MAP_KEY, envNew);
+            command.execute(variablesWithEnv, workSpace, calledArguments);
         } else {
             String target = arguments.get(DECRYPTED);
             SecurityManagement.createSecretFile(secret, target);
