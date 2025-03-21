@@ -44,11 +44,11 @@ public class WithSecretCommand extends AbstractCommand {
             Map<String,String> variablesWithSecret = new HashMap<>(variables);
             variablesWithSecret.put(arguments.get(VARIABLE), secret);
             command.execute(variablesWithSecret, workSpace, calledArguments);
-        }  if (arguments.containsKey(VARIABLE)) {
+        }  else if (arguments.containsKey(ENV_VARIABLE)) {
             // extend existing env variables by secret
             Map<String,String> variablesWithEnv = new HashMap<>(variables);
             String envOld = variablesWithEnv.get(ExternalProcess.ENV_MAP_KEY);
-            String envKVString = arguments.get(VARIABLE) + "=" + secret;
+            String envKVString = arguments.get(ENV_VARIABLE) + "=" + secret;
             String envNew = (envOld == null) ? envKVString : envOld + "," + envKVString;
             variablesWithEnv.put(ExternalProcess.ENV_MAP_KEY, envNew);
             command.execute(variablesWithEnv, workSpace, calledArguments);
